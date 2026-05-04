@@ -1,0 +1,64 @@
+{
+  "posts": [
+    {
+      "id": "t1",
+      "text": "Severe flooding in Dehradun, people trapped in homes",
+      "urgency_score": 0.95,
+      "urgency_level": "high"
+    },
+    {
+      "id": "t2",
+      "text": "Water levels rising rapidly near Rishikesh area",
+      "urgency_score": 0.90,
+      "urgency_level": "high"
+    },
+    {
+      "id": "t3",
+      "text": "Minor waterlogging reported in Haridwar streets",
+      "urgency_score": 0.50,
+      "urgency_level": "medium"
+    },
+    {
+      "id": "t4",
+      "text": "Electricity outage in Roorkee due to heavy rain",
+      "urgency_score": 0.60,
+      "urgency_level": "medium"
+    },
+    {
+      "id": "t5",
+      "text": "Situation normal in Mussoorie, light rainfall only",
+      "urgency_score": 0.20,
+      "urgency_level": "low"
+    },
+    {
+      "id": "t6",
+      "text": "Landslide reported near Tehri, road blocked",
+      "urgency_score": 0.93,
+      "urgency_level": "high"
+    },
+    {
+      "id": "t7",
+      "text": "Residents in Pauri requesting food and water supplies",
+      "urgency_score": 0.75,
+      "urgency_level": "high"
+    },
+    {
+      "id": "t8",
+      "text": "No major issues reported in Kotdwar",
+      "urgency_score": 0.15,
+      "urgency_level": "low"
+    },
+    {
+      "id": "t9",
+      "text": "Heavy damage and urgent rescue needed in Chamoli",
+      "urgency_score": 0.97,
+      "urgency_level": "high"
+    },
+    {
+      "id": "t10",
+      "text": "Roads partially blocked in Uttarkashi, movement slow",
+      "urgency_score": 0.55,
+      "urgency_level": "medium"
+    }
+  ]
+}
