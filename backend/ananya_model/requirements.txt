@@ -1,0 +1,16 @@
+fastapi
+uvicorn
+torch
+torchvision
+numpy
+pandas
+scikit-learn
+nltk
+pillow
+requests
+matplotlib
+opencv-python
+tqdm
+jupyter
+ipykernel
+transformers

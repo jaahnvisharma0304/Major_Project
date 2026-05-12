@@ -7,7 +7,7 @@ import SummaryPage from './pages/SummaryPage';
 import TweetsPage from './pages/TweetsPage';
 
 function App() {
-  const { satelliteRegions, tweetPosts, aiSummary, loading, error, refetch } = useDisasterData();
+  const { satelliteRegions, tweetPosts, tweetInsights, aiSummary, loading, error, refetch } = useDisasterData();
 
   if (error) {
     return (
@@ -58,6 +58,7 @@ function App() {
               element={
                 <TweetsPage 
                   tweetPosts={tweetPosts} 
+                  tweetInsights={tweetInsights}
                   loading={loading} 
                   refetch={refetch} 
                 />

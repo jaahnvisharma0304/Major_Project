@@ -1,0 +1,54 @@
+{
+  "source": "GDELT",
+  "total": 8,
+  "posts": [
+    {
+      "id": "t1",
+      "tweet_label": "Earthquake destroys buildings in Turkey",
+      "prediction": "informative",
+      "confidence": 0.566
+    },
+    {
+      "id": "t2",
+      "tweet_label": "Flood displaces thousands in India",
+      "prediction": "informative",
+      "confidence": 0.52
+    },
+    {
+      "id": "t3",
+      "tweet_label": "Wildfire spreads rapidly in California",
+      "prediction": "informative",
+      "confidence": 0.598
+    },
+    {
+      "id": "t4",
+      "tweet_label": "Cyclone approaching coastal regions",
+      "prediction": "informative",
+      "confidence": 0.599
+    },
+    {
+      "id": "t5",
+      "tweet_label": "Heavy rainfall triggers landslides",
+      "prediction": "informative",
+      "confidence": 0.625
+    },
+    {
+      "id": "t6",
+      "tweet_label": "Enjoyed a nice cup of coffee today",
+      "prediction": "not_informative",
+      "confidence": 0.687
+    },
+    {
+      "id": "t7",
+      "tweet_label": "Government announces new policy reforms",
+      "prediction": "not_informative",
+      "confidence": 0.681
+    },
+    {
+      "id": "t8",
+      "tweet_label": "Scientists discover new planet in solar system",
+      "prediction": "not_informative",
+      "confidence": 0.629
+    }
+  ]
+}

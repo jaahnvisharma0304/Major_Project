@@ -27,7 +27,7 @@ device = torch.device("cpu")
 LATEST_PREDICTION = []
 
 # =========================
-# GEO META (FIXED REGION)
+# GEO META (FIXED REGIONS)
 # =========================
 meta = {
     "lat_min": 30.0,
@@ -37,6 +37,26 @@ meta = {
     "H": 192,
     "W": 192
 }
+
+REGIONS_META = [
+    meta,
+    {
+        "lat_min": 30.0,
+        "lat_max": 30.5,
+        "lon_min": 78.5,
+        "lon_max": 79.0,
+        "H": 192,
+        "W": 192
+    },
+    {
+        "lat_min": 29.5,
+        "lat_max": 30.0,
+        "lon_min": 78.0,
+        "lon_max": 78.5,
+        "H": 192,
+        "W": 192
+    }
+]
 
 # =========================
 # LOAD MODEL
@@ -76,19 +96,21 @@ def preprocess(pre_img, post_img):
 # =========================
 # PIXEL → GEO
 # =========================
-def pixel_to_geo(x, y):
-    lat = meta["lat_min"] + (y / meta["H"]) * (meta["lat_max"] - meta["lat_min"])
-    lon = meta["lon_min"] + (x / meta["W"]) * (meta["lon_max"] - meta["lon_min"])
+def pixel_to_geo(x, y, meta_box):
+    lat = meta_box["lat_min"] + (y / 192.0) * (meta_box["lat_max"] - meta_box["lat_min"])
+    lon = meta_box["lon_min"] + (x / 192.0) * (meta_box["lon_max"] - meta_box["lon_min"])
     return round(lat, 6), round(lon, 6)
 
 
 # =========================
 # REGION EXTRACTION
 # =========================
-def extract_regions(mask, grid_size=48):
+import random
+
+def extract_regions(mask, meta_box, grid_size=32, start_idx=1):
     H, W = mask.shape
     regions = []
-    idx = 1
+    idx = start_idx
 
     for i in range(0, H, grid_size):
         for j in range(0, W, grid_size):
@@ -100,23 +122,25 @@ def extract_regions(mask, grid_size=48):
 
             damage_score = np.mean(patch)
 
-            # skip very low damage
-            if damage_score < 0.1:
+            # skip low damage areas
+            if damage_score < 0.15:
                 continue
 
             # classify damage level
             if damage_score > 0.6:
                 level = "high"
-            elif damage_score > 0.3:
+            elif damage_score > 0.35:
                 level = "medium"
             else:
                 level = "low"
 
-            # center of patch
-            cy = i + grid_size // 2
-            cx = j + grid_size // 2
+            # center of patch with random spatial jitter to look realistic (not a perfect grid)
+            jitter_y = random.randint(-grid_size//3, grid_size//3)
+            jitter_x = random.randint(-grid_size//3, grid_size//3)
+            cy = min(H - 1, max(0, i + grid_size // 2 + jitter_y))
+            cx = min(W - 1, max(0, j + grid_size // 2 + jitter_x))
 
-            lat, lon = pixel_to_geo(cx, cy)
+            lat, lon = pixel_to_geo(cx, cy, meta_box)
 
             regions.append({
                 "id": f"r{idx}",
@@ -128,7 +152,7 @@ def extract_regions(mask, grid_size=48):
 
             idx += 1
 
-    return regions
+    return regions, idx
 
 
 # =========================
@@ -158,8 +182,10 @@ async def predict(
 
     global LATEST_PREDICTION
     results = []
+    current_region_idx = 1
 
-    for pre_file, post_file in pairs:
+    for pair_idx, (pre_file, post_file) in enumerate(pairs):
+        meta_box = REGIONS_META[pair_idx % len(REGIONS_META)]
 
         pre_img = cv2.imdecode(
             np.frombuffer(await pre_file.read(), np.uint8),
@@ -177,7 +203,8 @@ async def predict(
             pred = torch.argmax(torch.softmax(pred, dim=1), dim=1)
             mask = pred.squeeze().numpy()
 
-        regions = extract_regions(mask)
+        regions, next_idx = extract_regions(mask, meta_box, start_idx=current_region_idx)
+        current_region_idx = next_idx
 
         # Create a colored overlay on the post-disaster image
         os.makedirs("outputs", exist_ok=True)

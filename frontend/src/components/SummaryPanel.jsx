@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { summarizeDisaster } from '../utils/summarizeDisaster';
-import { AlertTriangle, Activity, MapPin, BrainCircuit } from 'lucide-react';
+import { AlertTriangle, Activity, MapPin, ClipboardList } from 'lucide-react';
 import { Cell, Tooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
 import ReactMarkdown from 'react-markdown';
 
@@ -50,7 +50,7 @@ const SummaryPanel = ({ satelliteRegions, tweetPosts, aiSummary }) => {
           borderRadius: '16px' 
         }}>
           <h3 style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#f8fafc', marginBottom: '1.5rem', fontSize: '1.25rem' }}>
-            <BrainCircuit className="text-purple" size={24} /> AI Urgency Report
+            <ClipboardList className="text-purple" size={24} /> Executive Situation Report
           </h3>
           <div className="markdown-body" style={{ color: '#cbd5e1', lineHeight: '1.7', fontSize: '15px' }}>
             {aiSummary ? (
@@ -96,7 +96,7 @@ const SummaryPanel = ({ satelliteRegions, tweetPosts, aiSummary }) => {
       </div>
 
       <h3 style={{ color: '#f8fafc', marginBottom: '1.5rem', marginTop: '2rem', paddingBottom: '0.5rem', fontSize: '1.25rem' }}>
-        Critical Zones (Urgent Action Required)
+        Critical Zones
       </h3>
       
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem' }}>
@@ -128,7 +128,6 @@ const SummaryPanel = ({ satelliteRegions, tweetPosts, aiSummary }) => {
             <div style={{ padding: '1.5rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
                 <span style={{ fontWeight: '600', color: '#f8fafc', fontSize: '1.1rem' }}>{zone.location_name || `Region ${zone.id}`}</span>
-                <span style={{ backgroundColor: 'rgba(255, 77, 79, 0.1)', color: '#ff4d4f', padding: '4px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: 'bold', border: '1px solid rgba(255, 77, 79, 0.2)' }}>HIGH PRIORITY</span>
               </div>
               <div style={{ fontSize: '14px', color: '#94a3b8', display: 'flex', flexDirection: 'column', gap: '6px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>

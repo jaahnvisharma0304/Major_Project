@@ -1,7 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
 
-import tweetDataMock from '../data/sampleTweets.json';
-
 /**
  * Custom hook for data management.
  * 
@@ -16,6 +14,7 @@ import tweetDataMock from '../data/sampleTweets.json';
 export const useDisasterData = () => {
   const [satelliteRegions, setSatelliteRegions] = useState([]);
   const [tweetPosts, setTweetPosts] = useState([]);
+  const [tweetInsights, setTweetInsights] = useState(null);
   const [aiSummary, setAiSummary] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -72,14 +71,57 @@ export const useDisasterData = () => {
         console.error("Failed to fetch AI summary:", e);
       }
 
-      // const tweetRes = await fetch("http://localhost:8000/tweet-data");
-      // if (!tweetRes.ok) throw new Error("Failed to fetch tweet data");
-      // const tweetJson = await tweetRes.json();
-      // setTweetPosts(tweetJson.posts);
-      // -----------------------------------
+      // Fetch Tweets from ananya_model
+      let processedTweets = [];
+      try {
+        const tweetRes = await fetch("http://localhost:8002/latest-tweets");
+        if (tweetRes.ok) {
+          const tweetJson = await tweetRes.json();
+          const results = tweetJson.results || [];
+          
+          processedTweets = results
+            .filter(post => post.prediction === 'informative')
+            .map((post, index) => {
+              const score = post.confidence || 0.5;
+              let level = 'low';
+              if (score > 0.8) level = 'high';
+              else if (score > 0.5) level = 'medium';
+              
+              return {
+                id: `t${index}`,
+                text: post.text,
+                urgency_score: score,
+                urgency_level: level
+              };
+            });
+          setTweetPosts(processedTweets);
+        } else {
+          console.warn("Failed to fetch tweet data from ananya_model, falling back to mock");
+          setTweetPosts(tweetDataMock.posts);
+          processedTweets = tweetDataMock.posts;
+        }
+      } catch (e) {
+        console.error("Error fetching from ananya_model:", e);
+        setTweetPosts(tweetDataMock.posts);
+        processedTweets = tweetDataMock.posts;
+      }
 
-      // Current Implementation using Mock Data for Tweets
-      setTweetPosts(tweetDataMock.posts);
+      // Fetch Tweet Insights from jaahnvi_model
+      if (processedTweets.length > 0) {
+        try {
+          const insightRes = await fetch("http://localhost:8001/generate-tweet-summary", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(processedTweets)
+          });
+          if (insightRes.ok) {
+            const insightJson = await insightRes.json();
+            setTweetInsights(insightJson.summary);
+          }
+        } catch (e) {
+          console.error("Failed to fetch tweet insights:", e);
+        }
+      }
 
     } catch (err) {
       setError(err.message || "An unexpected error occurred while fetching data.");
@@ -105,6 +147,7 @@ export const useDisasterData = () => {
   return {
     satelliteRegions,
     tweetPosts,
+    tweetInsights,
     aiSummary,
     loading,
     error,

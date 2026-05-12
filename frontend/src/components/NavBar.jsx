@@ -1,14 +1,14 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { ShieldAlert, Map, Activity, MessageSquare } from 'lucide-react';
+import { Eye, Map, Activity, MessageSquare } from 'lucide-react';
 
 const NavBar = () => {
   return (
     <header className="navbar">
       <div className="nav-brand">
-        <ShieldAlert className="logo-icon text-red" size={32} />
+        {/* <Eye className="logo-icon text-red" size={32} /> */}
         <div>
-          <h1 className="app-title">CrisisResponse OS</h1>
+          <h1 className="app-title">CrisesEye</h1>
           <p className="app-subtitle">Multimodal Disaster Monitoring</p>
         </div>
       </div>
